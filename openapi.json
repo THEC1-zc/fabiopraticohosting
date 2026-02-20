@@ -1,103 +1,68 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "Banca Dati Giurisprudenza",
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "https://apps.dirittopratico.it"
-    }
-  ],
+  "openapi": "3.0.3",
+  "info": { "title": "Banca Dati Giurisprudenza", "version": "1.0.1" },
+  "servers": [{ "url": "https://apps.dirittopratico.it" }],
   "paths": {
     "/sentenze.html": {
       "get": {
         "summary": "Ricerca sentenze nella banca dati",
-        "description": "Per ogni risultato restituisci gli estremi del provvedimento come link ipertestuale al testo completo. La descrizione del link deve essere \"<AG> di <foro>, sentenza <numero> del <data>. Riporta poi il contenuto",
         "operationId": "ricercaSentenze",
         "parameters": [
           {
             "in": "query",
             "name": "q",
             "required": true,
-            "description": "Termini da cercare nella banca dati delle sentenze con la sintassi di SQLITE. Usa il carattere jolly * per includere maschili femminili singolari e plurali, le virgolette per cercare frasi specifiche o parole chiave composte (es. \"consenso informato\"), gli operatori NEAR, OR e -. Non usare stopwords! Puoi filtrare per Autorità Giudiziaria (es. AG:P per Giudice di Pace, AG:T per Tribunale, AG:A per Corte d'Appello, AG:C per Corte di Cassazione), foro (es. foro:Grosseto), per anno (es. data:2024), per Giudice (es. firmatoda:nomeGiudice). IMPORTANTE se devi cercare degli articoli scrivi solo \"art. <numeroArticolo>\" (es. \"art. 1053\") eliminando ogni riferimento al codice come cc cpc cds cp ecc.",
-            "schema": {
-              "type": "string"
-            }
+            "schema": { "type": "string" },
+            "description": "Termini da cercare nella banca dati con sintassi SQLITE. Usa * \"\" NEAR OR -; filtri AG:, foro:, data:, firmatoda:. Per articoli: \"art. <numero>\"."
           },
           {
             "in": "query",
             "name": "exp",
             "required": true,
-            "description": "Formato di esportazione dei dati. Usare 'json' per ricevere i risultati in formato JSON.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "json"
-              ]
-            }
+            "schema": { "type": "string", "enum": ["json"] },
+            "description": "Formato export: json"
           }
         ],
         "responses": {
           "200": {
-            "description": "Chiedi all'utente se vuole una sintesi e l'individuazione di una o più \"massime di diritto\" delle sentenze trovate. Se l'utente risponde di si, naviga ogni link di ogni risultato, fai una sintesi ed estrai una o più \"massime di diritto\" per ogni risultato.",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "AG": {
-                        "type": "string",
-                        "description": "Può essere \"C\" per Corte di Cassazione; \"A\" per Corte d'Appello; \"T\" per Tribunale; \"P\" per Giudice di Pace."
-                      },
-                      "foro": {
-                        "type": "string"
-                      },
-                      "numero": {
-                        "type": "string",
-                        "description": "numero della sentenza"
-                      },
-                      "data": {
-                        "type": "string",
-                        "description": "data della sentenza"
-                      },
-                      "contenuto": {
-                        "type": "string",
-                        "description": "un estratto del contenuto della sentenza"
-                      },
-                      "firmatoDa": {
-                        "type": "string",
-                        "description": "Giudice che ha pronunciato la sentenza"
-                      },
-                      "RG": {
-                        "type": "string",
-                        "description": "numero di Ruolo Generale della causa"
-                      },
-                      "md5": {
-                        "type": "string",
-                        "description": "un codice univoco del provvedimento, non devi mostrarlo all'utente"
-                      },
-                      "link": {
-                        "type": "string",
-                        "description": "collegamento al testo integrale della sentenza. Usalo per navigare all'indirizzo e leggere il testo integrale della sentenza se richiesto dall'utente"
-                      }
-                    }
-                  }
+                  "items": { "$ref": "#/components/schemas/Sentenza" }
                 }
               }
             }
-          },
-          "400": {
-            "description": "Richiesta non valida"
-          },
-          "500": {
-            "description": "Errore del server"
           }
-        }
+        },
+        "security": [{ "CookieAuth": [] }]
       }
     }
   },
-  "components": {}
+  "components": {
+    "schemas": {
+      "Sentenza": {
+        "type": "object",
+        "properties": {
+          "AG": { "type": "string" },
+          "foro": { "type": "string" },
+          "numero": { "type": "string" },
+          "data": { "type": "string" },
+          "contenuto": { "type": "string" },
+          "firmatoDa": { "type": "string" },
+          "RG": { "type": "string" },
+          "md5": { "type": "string" },
+          "link": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "CookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "REPLACE_WITH_COOKIE_NAME"
+      }
+    }
+  }
 }
