@@ -1,0 +1,63 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Banca Dati Giurisprudenza", "version": "1.0.2" },
+  "servers": [{ "url": "https://apps.dirittopratico.it" }],
+  "paths": {
+    "/sentenze.html": {
+      "get": {
+        "summary": "Ricerca sentenze nella banca dati",
+        "description": "Ricerca sentenze nella banca dati. Parametri: q (sintassi SQLITE), exp=json.",
+        "operationId": "ricercaSentenze",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "description": "Termini da cercare (SQLITE). Usa * \"\" NEAR OR -; filtri AG:, foro:, data:, firmatoda:. Per articoli: \"art. <numero>\".",
+            "schema": { "type": "string" }
+          },
+          {
+            "in": "query",
+            "name": "exp",
+            "required": true,
+            "schema": { "type": "string", "enum": ["json"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Risultati in JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Sentenza" }
+                }
+              }
+            }
+          },
+          "400": { "description": "Richiesta non valida" },
+          "500": { "description": "Errore del server" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Sentenza": {
+        "type": "object",
+        "properties": {
+          "AG": { "type": "string" },
+          "foro": { "type": "string" },
+          "numero": { "type": "string" },
+          "data": { "type": "string" },
+          "contenuto": { "type": "string" },
+          "firmatoDa": { "type": "string" },
+          "RG": { "type": "string" },
+          "md5": { "type": "string" },
+          "link": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}
