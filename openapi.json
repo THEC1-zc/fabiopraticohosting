@@ -1,26 +1,29 @@
 {
   "openapi": "3.0.3",
-  "info": { "title": "Banca Dati Giurisprudenza", "version": "1.0.1" },
-  "servers": [{ "url": "https://apps.dirittopratico.it" }],
+  "info": {
+    "title": "Banca Dati Giurisprudenza",
+    "version": "1.0.1"
+  },
+  "servers": [
+    { "url": "https://apps.dirittopratico.it" }
+  ],
   "paths": {
     "/sentenze.html": {
       "get": {
-        "summary": "Ricerca sentenze nella banca dati",
         "operationId": "ricercaSentenze",
+        "summary": "Ricerca sentenze nella banca dati",
         "parameters": [
           {
             "in": "query",
             "name": "q",
             "required": true,
-            "schema": { "type": "string" },
-            "description": "Termini da cercare nella banca dati con sintassi SQLITE. Usa * \"\" NEAR OR -; filtri AG:, foro:, data:, firmatoda:. Per articoli: \"art. <numero>\"."
+            "schema": { "type": "string" }
           },
           {
             "in": "query",
             "name": "exp",
             "required": true,
-            "schema": { "type": "string", "enum": ["json"] },
-            "description": "Formato export: json"
+            "schema": { "type": "string", "enum": ["json"] }
           }
         ],
         "responses": {
@@ -35,8 +38,7 @@
               }
             }
           }
-        },
-        "security": [{ "CookieAuth": [] }]
+        }
       }
     }
   },
@@ -55,13 +57,6 @@
           "md5": { "type": "string" },
           "link": { "type": "string" }
         }
-      }
-    },
-    "securitySchemes": {
-      "CookieAuth": {
-        "type": "apiKey",
-        "in": "cookie",
-        "name": "REPLACE_WITH_COOKIE_NAME"
       }
     }
   }
